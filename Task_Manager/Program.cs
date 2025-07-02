@@ -1,4 +1,6 @@
-﻿namespace Task_Manager;
+﻿using System;
+
+namespace Task_Manager;
 
 class Program
 {
