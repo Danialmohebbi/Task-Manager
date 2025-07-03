@@ -9,7 +9,6 @@ public record class Student(
     string LastName,
     string Email,
     string Username,
-    string Password,
-    IEnumerable<Task> Tasks
+    string Password
 );
 

@@ -1,8 +1,12 @@
+using System;
+
 namespace Task_Manager.Data;
 using Npgsql;
 public class Database
 {
-    private static string ConnectionString = "";
+    private static string ConnectionString = 
+            "Host=studentdb.cfmui6es8ks2.eu-north-1.rds.amazonaws.com;Port=5432;Username=postgres;Password=WEEK71234;Database=postgres;SSL Mode=Require;Trust Server Certificate=true"
+        ;
     
     public static NpgsqlConnection Connect()
     {
@@ -44,5 +48,22 @@ public class Database
         
         tasksTable.ExecuteNonQuery();
 
+    }
+
+    public static void ShowStudents()
+    {
+        using var conn = Connect();
+        
+        using var cmd = new NpgsqlCommand("SELECT * FROM students ORDER BY student_id", conn);
+        using var reader = cmd.ExecuteReader();
+        
+        while (reader.Read())
+        {
+            Console.WriteLine(
+                $"{reader["student_id"]}, {reader["first_name"]}, {reader["last_name"]}," +
+                $" {reader["email"]}, {reader["username"]}, {reader["password_hash"]}" +
+                $""
+                );
+        }
     }
 }
