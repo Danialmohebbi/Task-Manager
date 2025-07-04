@@ -66,4 +66,23 @@ public class Database
                 );
         }
     }
+    
+    public static void ShowTasks()
+    {
+        using var conn = Connect();
+
+        using var cmd = new NpgsqlCommand("SELECT * FROM tasks ORDER BY task_id", conn);
+        using var reader = cmd.ExecuteReader();
+
+        while (reader.Read())
+        {
+            Console.WriteLine(
+                $"{reader["task_id"]}, {reader["student_id"]}, {reader["title"]}, " +
+                $"{reader["description"]}, {reader["due_date"]}, {reader["completed"]}, " +
+                $"{reader["priority"]}, {reader["category"]}, {reader["recurrence"]}, " +
+                $"{reader["created_at"]}, {reader["updated_at"]}, {reader["completed_at"]}"
+            );
+        }
+    }
+
 }

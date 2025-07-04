@@ -37,7 +37,7 @@ public class StudentRepository : IStudentRepository
 
         if (student.Id > 0)
         {
-            // Insert with specific ID
+            
             query = @"
             INSERT INTO students(student_id, first_name, last_name, email, username, password_hash)
             VALUES (@Id, @FirstName, @LastName, @Email, @Username, @PasswordHash)

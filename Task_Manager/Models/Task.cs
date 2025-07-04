@@ -2,11 +2,11 @@ using System;
 
 namespace Task_Manager.Models;
 
-public record class TaskItem(
+public record class Task(
     int Id,
     int StudentId,
     string Title,
-    string Description,
+    string? Description,
     DateTime DueDate,
     bool Completed,
     int? Priority,             
