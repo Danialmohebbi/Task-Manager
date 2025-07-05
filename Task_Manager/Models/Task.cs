@@ -9,9 +9,9 @@ public record class Task(
     string? Description,
     DateTime DueDate,
     bool Completed,
-    int? Priority,             
+    Priority? Priority,             
     string? Category,
-    string? Recurrence,
+    Recurrence? Recurrence,
     DateTime CreatedAt,
     DateTime UpdatedAt,
     DateTime? CompletedAt       
