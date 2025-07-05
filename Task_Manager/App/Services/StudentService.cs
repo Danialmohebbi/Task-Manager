@@ -48,7 +48,9 @@ public class StudentService
     }
     
     
-    public string GenerateOTP() => new Random().Next(100000, 999999).ToString(); 
+    public string GenerateOTP() => new Random()
+                                    .Next(100000, 999999)
+                                    .ToString(); 
     
 
     public void StoreOTP(string login, string otp)
