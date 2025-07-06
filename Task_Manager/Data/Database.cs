@@ -39,7 +39,7 @@ public class Database
                         completed BOOLEAN DEFAULT FALSE,
                         priority INT,                                    
                         category VARCHAR(100),
-                        recurrence VARCHAR(50),
+                        recurrence INT,
                         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                         completed_at TIMESTAMP,

@@ -7,15 +7,15 @@ using Task_Manager.Models;
 public interface ITaskRepository
 {
     // CREATE
-    void Add(Task task);
+    void Add(TaskItem task);
 
     // READ
-    Task GetById(int id);
-    IEnumerable<Task> GetAll();
-    IEnumerable<Task> GetByStudentId(int studentId);
+    TaskItem GetById(int id);
+    IEnumerable<TaskItem> GetAll();
+    IEnumerable<TaskItem> GetByStudentId(int studentId);
 
     // UPDATE
-    void Update(Task task);
+    void Update(TaskItem task);
 
     // DELETE
     void Delete(int id);

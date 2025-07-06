@@ -23,7 +23,7 @@ public class TaskRepository : ITaskRepository
         return existingTaskCount > 0;
     }
 
-    public void Add(Task task)
+    public void Add(TaskItem task)
     {
         using var conn = Database.Connect();
 
@@ -42,7 +42,7 @@ public class TaskRepository : ITaskRepository
             
             query = @"
             INSERT INTO tasks(task_id, student_id, title, description, due_date, completed, priority, category, recurrence, created_at, updated_at, completed_at)
-            VALUES (@task_Id,@student_Id, @title, @description, @due_date, @completed, @priority, @category, @recurrence, @created_at, @updated_at, @completed_at)
+            VALUES (@StudentId, @Title, @Description, @DueDate, @Completed, @priority, @Category, @recurrence, @CreatedAt, @UpdatedAt, @CompletedAt)
             ";
             cmd.Parameters.AddWithValue("@task_id", task.Id);
         }
@@ -51,23 +51,24 @@ public class TaskRepository : ITaskRepository
             
             query = @"            
             INSERT INTO tasks(student_id, title, description, due_date, completed, priority, category, recurrence, created_at, updated_at, completed_at)
-            VALUES (@student_Id, @title, @description, @due_date, @completed, @priority, @category, @recurrence, @created_at, @updated_at, @completed_at)
+            VALUES (@StudentId, @Title, @Description, @DueDate, @Completed, @priority, @Category, @recurrence, @CreatedAt, @UpdatedAt, @CompletedAt)
             ";
         }
 
         cmd.CommandText = query;
+        
+        cmd.Parameters.AddWithValue("@StudentId", task.StudentId);
+        cmd.Parameters.AddWithValue("@Title", task.Title);
+        cmd.Parameters.AddWithValue("@Description", (object?)task.Description ?? DBNull.Value);
+        cmd.Parameters.AddWithValue("@DueDate", task.DueDate);
+        cmd.Parameters.AddWithValue("@Completed", task.Completed);
+        cmd.Parameters.AddWithValue("@priority", task.Priority.HasValue ? (object)(int)task.Priority.Value : DBNull.Value);
+        cmd.Parameters.AddWithValue("@recurrence", task.Recurrence.HasValue ? (object)(int)task.Recurrence.Value : DBNull.Value);
+        cmd.Parameters.AddWithValue("@Category", (object?)task.Category ?? DBNull.Value);
+        cmd.Parameters.AddWithValue("@CreatedAt", task.CreatedAt);
+        cmd.Parameters.AddWithValue("@UpdatedAt", task.UpdatedAt);
+        cmd.Parameters.AddWithValue("@CompletedAt", (object?)task.CompletedAt ?? DBNull.Value);
 
-        cmd.Parameters.AddWithValue("@student_Id", task.StudentId);
-        cmd.Parameters.AddWithValue("@title", task.Title);
-        cmd.Parameters.AddWithValue("@description", (object?)task.Description ?? DBNull.Value);
-        cmd.Parameters.AddWithValue("@due_date", task.DueDate);
-        cmd.Parameters.AddWithValue("@completed", task.Completed);
-        cmd.Parameters.AddWithValue("@priority", (object?)task.Priority ?? DBNull.Value);
-        cmd.Parameters.AddWithValue("@category", (object?)task.Category ?? DBNull.Value);
-        cmd.Parameters.AddWithValue("@recurrence", (object?)task.Recurrence ?? DBNull.Value);
-        cmd.Parameters.AddWithValue("@created_at", task.CreatedAt);
-        cmd.Parameters.AddWithValue("@updated_at", task.UpdatedAt);
-        cmd.Parameters.AddWithValue("@completed_at", (object?)task.CompletedAt ?? DBNull.Value);
         
 
         cmd.ExecuteNonQuery();
@@ -82,7 +83,7 @@ public class TaskRepository : ITaskRepository
         }
     }
 
-    public Task? GetById(int taskId)
+    public Models.TaskItem? GetById(int taskId)
     {
         using var conn = Database.Connect();
 
@@ -100,47 +101,49 @@ public class TaskRepository : ITaskRepository
 
         if (!reader.Read())
             return null;
+        return new TaskItem(
+                Id: reader.GetInt32(reader.GetOrdinal("task_id")),
+                StudentId: reader.GetInt32(reader.GetOrdinal("student_id")),
+                Title: reader.GetString(reader.GetOrdinal("title")),
+                Description: reader.IsDBNull(reader.GetOrdinal("description")) ? null : reader.GetString(reader.GetOrdinal("description")),
+                DueDate: reader.GetDateTime(reader.GetOrdinal("due_date")),
+                Completed: reader.GetBoolean(reader.GetOrdinal("completed")),
+                Priority: reader.IsDBNull(reader.GetOrdinal("priority")) ? null : (Priority?)reader.GetInt32(reader.GetOrdinal("priority")),
+                Category: reader.IsDBNull(reader.GetOrdinal("category")) ? null : reader.GetString(reader.GetOrdinal("category")),
+                Recurrence: reader.IsDBNull(reader.GetOrdinal("recurrence")) ? null : (Recurrence?)reader.GetInt32(reader.GetOrdinal("recurrence")),
+                CreatedAt: reader.GetDateTime(reader.GetOrdinal("created_at")),
+                UpdatedAt: reader.GetDateTime(reader.GetOrdinal("updated_at")),
+                CompletedAt: reader.IsDBNull(reader.GetOrdinal("completed_at")) ? null : reader.GetDateTime(reader.GetOrdinal("completed_at"))
+            );
 
-        return new Task(
-            Id: reader.GetInt32(reader.GetOrdinal("task_id")),
-            StudentId: reader.GetInt32(reader.GetOrdinal("student_id")),
-            Title: reader.GetString(reader.GetOrdinal("title")),
-            Description: reader.IsDBNull(reader.GetOrdinal("description")) ? null : reader.GetString(reader.GetOrdinal("description")),
-            DueDate: reader.GetDateTime(reader.GetOrdinal("due_date")),
-            Completed: reader.GetBoolean(reader.GetOrdinal("completed")),
-            Priority: reader.IsDBNull(reader.GetOrdinal("priority")) ? null : reader.GetInt32(reader.GetOrdinal("priority")),
-            Category: reader.IsDBNull(reader.GetOrdinal("category")) ? null : reader.GetString(reader.GetOrdinal("category")),
-            Recurrence: reader.IsDBNull(reader.GetOrdinal("recurrence")) ? null : reader.GetString(reader.GetOrdinal("recurrence")),
-            CreatedAt: reader.GetDateTime(reader.GetOrdinal("created_at")),
-            UpdatedAt: reader.GetDateTime(reader.GetOrdinal("updated_at")),
-            CompletedAt: reader.IsDBNull(reader.GetOrdinal("completed_at")) ? null : reader.GetDateTime(reader.GetOrdinal("completed_at"))
-        );
+        
     }
 
 
-    public IEnumerable<Task> GetAll()
+    public IEnumerable<TaskItem> GetAll()
     {
         using var conn = Database.Connect();
         using var cmd = new NpgsqlCommand("SELECT * FROM tasks ORDER BY task_id", conn);
         using var reader = cmd.ExecuteReader();
 
-        var tasks = new List<Task>();
+        var tasks = new List<TaskItem>();
 
         while (reader.Read())
         {
-            var task = new Task(
-                reader.GetInt32(reader.GetOrdinal("task_id")),
-                reader.GetInt32(reader.GetOrdinal("student_id")),
-                reader.GetString(reader.GetOrdinal("title")),
-                reader.IsDBNull(reader.GetOrdinal("description")) ? null : reader.GetString(reader.GetOrdinal("description")),
-                reader.GetDateTime(reader.GetOrdinal("due_date")),
-                reader.GetBoolean(reader.GetOrdinal("completed")),
-                reader.IsDBNull(reader.GetOrdinal("priority")) ? null : reader.GetInt32(reader.GetOrdinal("priority")),
-                reader.IsDBNull(reader.GetOrdinal("category")) ? null : reader.GetString(reader.GetOrdinal("category")),
-                reader.IsDBNull(reader.GetOrdinal("recurrence")) ? null : reader.GetString(reader.GetOrdinal("recurrence")),
-                reader.GetDateTime(reader.GetOrdinal("created_at")),
-                reader.GetDateTime(reader.GetOrdinal("updated_at")),
-                reader.IsDBNull(reader.GetOrdinal("completed_at")) ? null : reader.GetDateTime(reader.GetOrdinal("completed_at"))
+            var task = new TaskItem(
+                Id: reader.GetInt32(reader.GetOrdinal("task_id")),
+                StudentId: reader.GetInt32(reader.GetOrdinal("student_id")),
+                Title: reader.GetString(reader.GetOrdinal("title")),
+                Description: reader.IsDBNull(reader.GetOrdinal("description")) ? null : reader.GetString(reader.GetOrdinal("description")),
+                DueDate: reader.GetDateTime(reader.GetOrdinal("due_date")),
+                Completed: reader.GetBoolean(reader.GetOrdinal("completed")),
+                Priority: reader.IsDBNull(reader.GetOrdinal("priority")) ? null : (Priority?)reader.GetInt32(reader.GetOrdinal("priority")),
+                Category: reader.IsDBNull(reader.GetOrdinal("category")) ? null : reader.GetString(reader.GetOrdinal("category")),
+                Recurrence: reader.IsDBNull(reader.GetOrdinal("recurrence")) ? null : (Recurrence?)reader.GetInt32(reader.GetOrdinal("recurrence")),
+                CreatedAt: reader.GetDateTime(reader.GetOrdinal("created_at")),
+                UpdatedAt: reader.GetDateTime(reader.GetOrdinal("updated_at")),
+                CompletedAt: reader.IsDBNull(reader.GetOrdinal("completed_at")) ? null : reader.GetDateTime(reader.GetOrdinal("completed_at"))
+
             );
 
 
@@ -149,7 +152,7 @@ public class TaskRepository : ITaskRepository
 
         return tasks;    }
 
-    public IEnumerable<Task> GetByStudentId(int studentId)
+    public IEnumerable<TaskItem> GetByStudentId(int studentId)
     {
         using var conn = Database.Connect();
 
@@ -159,20 +162,20 @@ public class TaskRepository : ITaskRepository
 
         using var reader = cmd.ExecuteReader();
 
-        var tasks = new List<Task>();
+        var tasks = new List<TaskItem>();
 
         while (reader.Read())
         {
-            tasks.Add(new Task(
+            tasks.Add(new TaskItem(
                 Id: reader.GetInt32(reader.GetOrdinal("task_id")),
                 StudentId: reader.GetInt32(reader.GetOrdinal("student_id")),
                 Title: reader.GetString(reader.GetOrdinal("title")),
                 Description: reader.IsDBNull(reader.GetOrdinal("description")) ? null : reader.GetString(reader.GetOrdinal("description")),
                 DueDate: reader.GetDateTime(reader.GetOrdinal("due_date")),
                 Completed: reader.GetBoolean(reader.GetOrdinal("completed")),
-                Priority: reader.IsDBNull(reader.GetOrdinal("priority")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("priority")),
+                Priority: reader.IsDBNull(reader.GetOrdinal("priority")) ? null : (Priority)reader.GetInt32(reader.GetOrdinal("priority")),
                 Category: reader.IsDBNull(reader.GetOrdinal("category")) ? null : reader.GetString(reader.GetOrdinal("category")),
-                Recurrence: reader.IsDBNull(reader.GetOrdinal("recurrence")) ? null : reader.GetString(reader.GetOrdinal("recurrence")),
+                Recurrence: reader.IsDBNull(reader.GetOrdinal("recurrence")) ? null : Enum.Parse<Recurrence>(reader.GetString(reader.GetOrdinal("recurrence"))),
                 CreatedAt: reader.GetDateTime(reader.GetOrdinal("created_at")),
                 UpdatedAt: reader.GetDateTime(reader.GetOrdinal("updated_at")),
                 CompletedAt: reader.IsDBNull(reader.GetOrdinal("completed_at")) ? (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("completed_at"))
@@ -183,7 +186,7 @@ public class TaskRepository : ITaskRepository
     }
 
 
-    public void Update(Task task)
+    public void Update(TaskItem task)
     {
         using var conn = Database.Connect();
 
@@ -214,13 +217,14 @@ public class TaskRepository : ITaskRepository
         cmd.Parameters.AddWithValue("@Description", (object?)task.Description ?? DBNull.Value);
         cmd.Parameters.AddWithValue("@DueDate", task.DueDate);
         cmd.Parameters.AddWithValue("@Completed", task.Completed);
-        cmd.Parameters.AddWithValue("@Priority", (object?)task.Priority ?? DBNull.Value);
+        cmd.Parameters.AddWithValue("priority", task.Priority.HasValue ? (object)(int)task.Priority.Value : DBNull.Value);
+        cmd.Parameters.AddWithValue("recurrence", task.Recurrence.HasValue ? (object)(int)task.Recurrence.Value : DBNull.Value);
         cmd.Parameters.AddWithValue("@Category", (object?)task.Category ?? DBNull.Value);
-        cmd.Parameters.AddWithValue("@Recurrence", (object?)task.Recurrence ?? DBNull.Value);
         cmd.Parameters.AddWithValue("@CreatedAt", task.CreatedAt);
         cmd.Parameters.AddWithValue("@UpdatedAt", task.UpdatedAt);
         cmd.Parameters.AddWithValue("@CompletedAt", (object?)task.CompletedAt ?? DBNull.Value);
         cmd.Parameters.AddWithValue("@Id", task.Id);
+
 
         cmd.ExecuteNonQuery();
     }
