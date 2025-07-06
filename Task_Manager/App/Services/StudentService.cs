@@ -25,6 +25,7 @@ public class StudentService
     }
     
 
+
     public bool UserExists(string login)
     {
         return (from s in _repo.GetAll()
@@ -33,7 +34,7 @@ public class StudentService
             select s).Any();
     }
 
-    private Student? GetUserByLogin(string login)
+    public Student? GetUserByLogin(string login)
     {
         return (from s in _repo.GetAll()
             where s.Email.Equals(login, StringComparison.OrdinalIgnoreCase) ||
