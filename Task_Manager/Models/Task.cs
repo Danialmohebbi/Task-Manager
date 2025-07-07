@@ -2,7 +2,7 @@ using System;
 
 namespace Task_Manager.Models;
 
-public record class Task(
+public record class TaskItem(
     int Id,
     int StudentId,
     string Title,

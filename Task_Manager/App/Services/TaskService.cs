@@ -70,4 +70,104 @@ public class TaskService
         _repo.Delete(task_id);
         return true;
     }
+
+
+    public IEnumerable<TaskItem> FilterByPriority(IEnumerable<TaskItem> tasks, Priority? priority,bool reverse = false)
+    {
+        var query = (from t in tasks 
+            where t.Priority == priority && t.Priority.HasValue select t).ToList();
+        
+        if (reverse)
+            query.Reverse();
+        return query;
+    }
+    
+    public IEnumerable<TaskItem> FilterByRecurrence(IEnumerable<TaskItem> tasks, Recurrence? recurrence,bool reverse = false)
+    {
+        var query = (from t in tasks 
+            where t.Recurrence == recurrence && t.Recurrence.HasValue select t).ToList();
+        
+        if (reverse)
+            query.Reverse();
+        return query;
+    }
+    
+    public IEnumerable<TaskItem> FilterByCompleted(IEnumerable<TaskItem> tasks, bool completed,bool reverse = false)
+    {
+        var query = (from t in tasks 
+            where t.Completed && completed  select t).ToList();
+        
+        if (reverse)
+            query.Reverse();
+        return query;
+    }
+    
+    public IEnumerable<TaskItem> FilterByDueDateRange(IEnumerable<TaskItem> tasks, DateTime start, DateTime end, bool reverse = false)
+    {
+        var query = (from t in tasks 
+            where t.DueDate >= start && t.DueDate <= end  select t).ToList();
+
+        if (reverse) 
+            query.Reverse();
+        return query;
+    }
+    
+    public IEnumerable<TaskItem> FilterByKeyword(IEnumerable<TaskItem> tasks, string keyword, bool reverse = false)
+    {
+        var query = (from t in tasks 
+            where !string.IsNullOrEmpty(t.Title) && t.Title.Contains(keyword, StringComparison.OrdinalIgnoreCase)
+                || (!string.IsNullOrEmpty(t.Description) && t.Description.Contains(keyword, StringComparison.OrdinalIgnoreCase))
+                select t).ToList();
+
+        if (reverse) 
+            query.Reverse();
+        return query;
+    }
+
+    public IEnumerable<TaskItem> FilterOverdueTasks(IEnumerable<TaskItem> tasks, DateTime currentDate, bool reverse = false)
+    {
+        var NotCompletedTasks = FilterByCompleted(tasks,false,false);
+        var query = (from t in NotCompletedTasks 
+            where t.DueDate < currentDate select t).ToList();
+
+
+        if (reverse) 
+            query.Reverse();
+        return query;
+    }
+
+    public IEnumerable<TaskItem> FilterByCompletedAtRange(IEnumerable<TaskItem> tasks, DateTime fromDateTime, DateTime toDateTime, bool reverse = false)
+    {
+        var query = (from t in tasks where t.CompletedAt.HasValue 
+                                           && t.CompletedAt.Value >= fromDateTime 
+                                           && t.CompletedAt.Value <= toDateTime 
+                                           select t).ToList();
+
+        if (reverse) 
+            query.Reverse();
+        return query;
+    }
+
+    
+    
+    public IEnumerable<TaskItem> FilterByCreatedDate(IEnumerable<TaskItem> tasks, DateTime LowerBound,bool reverse = false)
+    {
+        var query = (from t in tasks 
+            where t.CreatedAt >= LowerBound  select t).ToList();
+        
+        if (reverse)
+            query.Reverse();
+        return query;
+    }
+    
+    public IEnumerable<TaskItem> FilterByTag(IEnumerable<TaskItem> tasks, String Tag,bool reverse = false)
+    {
+        var query = (from t in tasks 
+                                where t.Category == Tag  
+                                select t).ToList();
+        
+        if (reverse)
+            query.Reverse();
+        return query;
+    }
 }

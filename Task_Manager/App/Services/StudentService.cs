@@ -3,6 +3,8 @@ using System.Net.Mail;
 using Task_Manager.App.Interfaces;
 using Task_Manager.Models;
 
+namespace Task_Manager.App.Services;
+
 public class StudentService
 {
     private readonly IStudentRepository _repo;
@@ -39,7 +41,7 @@ public class StudentService
         return (from s in _repo.GetAll()
             where s.Email.Equals(login, StringComparison.OrdinalIgnoreCase) ||
                   s.Username.Equals(login, StringComparison.OrdinalIgnoreCase)
-                  select s).FirstOrDefault();
+            select s).FirstOrDefault();
     }
 
     public bool Login(string login, string password)
@@ -50,8 +52,8 @@ public class StudentService
     
     
     public string GenerateOTP() => new Random()
-                                    .Next(100000, 999999)
-                                    .ToString(); 
+        .Next(100000, 999999)
+        .ToString(); 
     
 
     public void StoreOTP(string login, string otp)
