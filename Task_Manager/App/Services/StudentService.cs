@@ -51,17 +51,17 @@ public class StudentService
     }
     
     
-    public string GenerateOTP() => new Random()
+    public string GenerateOtp() => new Random()
         .Next(100000, 999999)
         .ToString(); 
     
 
-    public void StoreOTP(string login, string otp)
+    public void StoreOtp(string login, string otp)
     {
         _otpStore[login] = (otp, DateTime.Now.AddSeconds(60)); 
     }
 
-    public bool VerifyOTP(string login, string inputOtp)
+    public bool VerifyOtp(string login, string inputOtp)
     {
         if (_otpStore.TryGetValue(login, out var data))
         {
@@ -83,11 +83,9 @@ public class StudentService
         string smtpHost = "smtp.mail.yahoo.com";
         int smtpPort = 587;
  
-        using var client = new SmtpClient(smtpHost, smtpPort)
-        {
-            Credentials = new NetworkCredential(fromEmail, password),
-            EnableSsl = true
-        };
+        using var client = new SmtpClient(smtpHost, smtpPort);
+        client.Credentials = new NetworkCredential(fromEmail, password);
+        client.EnableSsl = true;
 
         var message = new MailMessage(fromEmail, toEmail)
         {

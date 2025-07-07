@@ -14,12 +14,12 @@ public class TaskService
     }
 
     
-    public IEnumerable<Models.TaskItem> ViewTasks(int student_id) => _repo.GetByStudentId(student_id);
+    public IEnumerable<TaskItem> ViewTasks(int studentId) => _repo.GetByStudentId(studentId);
 
-    public bool TaskExists(int task_id, int student_id)
+    public bool TaskExists(int taskId, int studentId)
     {
-        return (from t in ViewTasks(student_id)
-                where t.Id == task_id
+        return (from t in ViewTasks(studentId)
+                where t.Id == taskId
                 select t
             ).Any();
     }
@@ -33,11 +33,9 @@ public class TaskService
         return true;
     }
 
-    public bool MarkTaskDone(int task_id)
+    public bool MarkTaskDone(int taskId)
     {
-        var task = _repo.GetById(task_id);
-        if (task == null)
-            return false;
+        var task = _repo.GetById(taskId);
 
         DateTime temp = DateTime.Now;
         
@@ -61,13 +59,13 @@ public class TaskService
 
 
 
-    public bool DeleteTask(int task_id, int student_id)
+    public bool DeleteTask(int taskId, int studentId)
     {
-        if (!TaskExists(task_id, student_id))
+        if (!TaskExists(taskId, studentId))
         {
             return false;
         }
-        _repo.Delete(task_id);
+        _repo.Delete(taskId);
         return true;
     }
 
@@ -126,8 +124,8 @@ public class TaskService
 
     public IEnumerable<TaskItem> FilterOverdueTasks(IEnumerable<TaskItem> tasks, DateTime currentDate, bool reverse = false)
     {
-        var NotCompletedTasks = FilterByCompleted(tasks,false,false);
-        var query = (from t in NotCompletedTasks 
+        var notCompletedTasks = FilterByCompleted(tasks,false);
+        var query = (from t in notCompletedTasks 
             where t.DueDate < currentDate select t).ToList();
 
 
@@ -150,20 +148,20 @@ public class TaskService
 
     
     
-    public IEnumerable<TaskItem> FilterByCreatedDate(IEnumerable<TaskItem> tasks, DateTime LowerBound,bool reverse = false)
+    public IEnumerable<TaskItem> FilterByCreatedDate(IEnumerable<TaskItem> tasks, DateTime lowerBound,bool reverse = false)
     {
         var query = (from t in tasks 
-            where t.CreatedAt >= LowerBound  select t).ToList();
+            where t.CreatedAt >= lowerBound  select t).ToList();
         
         if (reverse)
             query.Reverse();
         return query;
     }
     
-    public IEnumerable<TaskItem> FilterByTag(IEnumerable<TaskItem> tasks, String Tag,bool reverse = false)
+    public IEnumerable<TaskItem> FilterByTag(IEnumerable<TaskItem> tasks, String tag,bool reverse = false)
     {
         var query = (from t in tasks 
-                                where t.Category == Tag  
+                                where t.Category == tag  
                                 select t).ToList();
         
         if (reverse)

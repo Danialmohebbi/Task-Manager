@@ -83,7 +83,7 @@ public class TaskRepository : ITaskRepository
         }
     }
 
-    public Models.TaskItem? GetById(int taskId)
+    public TaskItem? GetById(int taskId)
     {
         using var conn = Database.Connect();
 
