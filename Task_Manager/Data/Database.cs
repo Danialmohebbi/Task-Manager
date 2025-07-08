@@ -1,13 +1,30 @@
-using System;
+using Newtonsoft.Json;
+using Task_Manager.Models;
 
 namespace Task_Manager.Data;
 using Npgsql;
 public class Database
 {
-    private static string ConnectionString = 
-            "Host=studentdb.cfmui6es8ks2.eu-north-1.rds.amazonaws.com;Port=5432;Username=postgres;Password=WEEK71234;Database=postgres;SSL Mode=Require;Trust Server Certificate=true"
-        ;
     
+    private static string ConnectionString = Run();
+            
+        
+
+    private static string Run()
+    {
+        string curDir = AppContext.BaseDirectory;
+        string root = Path.GetFullPath(Path.Combine(curDir, "..", "..", ".."));
+        string path = Path.Combine(root, "JsonInput", "database.json");
+        string output = File.ReadAllText(path);
+        DatabaseInfo db1 = JsonConvert.DeserializeObject<DatabaseInfo>(output);
+        return $"Host={db1.Host};" +
+               $"Port={db1.Port};" +
+               $"Username={db1.Username};" +
+               $"Password={db1.Password};" +
+               $"Database={db1.Database};" +
+               $"SSL Mode={db1.SSL};" +
+               $"Trust Server Certificate={db1.ServerCertification}";
+    }
     public static NpgsqlConnection Connect()
     {
         var conn = new NpgsqlConnection(ConnectionString);

@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Mail;
+using Newtonsoft.Json;
 using Task_Manager.App.Interfaces;
 using Task_Manager.Models;
 
@@ -71,17 +72,26 @@ public class StudentService
         return false;
     }
 
+    static SmptInfo GetInfo()
+    {
+        string curDir = AppContext.BaseDirectory;
+        string root = Path.GetFullPath(Path.Combine(curDir, "..", "..", ".."));
+        string path = Path.Combine(root, "JsonInput", "smpt.json");
+        string output = File.ReadAllText(path);
+        return JsonConvert.DeserializeObject<SmptInfo>(output);
+    }
+
     public bool SendEmail(string login, string otp)
     {
         var student = GetUserByLogin(login);
         if (student == null)
             return false;
-
+        SmptInfo smpt = GetInfo();
         string toEmail = student.Email;
-        string fromEmail = "daniyalmohebbi@yahoo.com";
-        string password = "fprxmgqdcklfbzlq"; 
-        string smtpHost = "smtp.mail.yahoo.com";
-        int smtpPort = 587;
+        string fromEmail = smpt.FromEmail;
+        string password = smpt.Password; 
+        string smtpHost = smpt.SmptHost;
+        int smtpPort = smpt.SmptPort;
  
         using var client = new SmtpClient(smtpHost, smtpPort);
         client.Credentials = new NetworkCredential(fromEmail, password);
