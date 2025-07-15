@@ -175,7 +175,7 @@ public class TaskRepository : ITaskRepository
                 Completed: reader.GetBoolean(reader.GetOrdinal("completed")),
                 Priority: reader.IsDBNull(reader.GetOrdinal("priority")) ? null : (Priority)reader.GetInt32(reader.GetOrdinal("priority")),
                 Category: reader.IsDBNull(reader.GetOrdinal("category")) ? null : reader.GetString(reader.GetOrdinal("category")),
-                Recurrence: reader.IsDBNull(reader.GetOrdinal("recurrence")) ? null : Enum.Parse<Recurrence>(reader.GetString(reader.GetOrdinal("recurrence"))),
+                Recurrence: reader.IsDBNull(reader.GetOrdinal("recurrence")) ? null : (Recurrence)(reader.GetInt32(reader.GetOrdinal("recurrence"))),
                 CreatedAt: reader.GetDateTime(reader.GetOrdinal("created_at")),
                 UpdatedAt: reader.GetDateTime(reader.GetOrdinal("updated_at")),
                 CompletedAt: reader.IsDBNull(reader.GetOrdinal("completed_at")) ? (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("completed_at"))
