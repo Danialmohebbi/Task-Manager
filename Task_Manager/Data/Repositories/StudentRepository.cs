@@ -77,31 +77,32 @@ public class StudentRepository : IStudentRepository
     public Student? GetById(int student_id)
     {
         using var conn = Database.Connect();
-
+        IStudentBuilder studentBuilder = new StudentBuilder();
         if (!StudentExists(student_id, conn))
         {
             Console.WriteLine("Student does not exist!");
             return null;
         }
-        
         using var cmd = new NpgsqlCommand(
             @"SELECT * FROM students WHERE student_id = @id"
             , conn);   
         cmd.Parameters.AddWithValue("@id", student_id);
         using var reader = cmd.ExecuteReader();
         reader.Read();
-        return new Student(
-            Id: reader.GetInt32(reader.GetOrdinal("student_id")),
-            FirstName: reader.GetString(reader.GetOrdinal("first_name")),
-            LastName: reader.GetString(reader.GetOrdinal("last_name")),
-            Email: reader.GetString(reader.GetOrdinal("email")),
-            Username: reader.GetString(reader.GetOrdinal("username")),
-            Password: reader.GetString(reader.GetOrdinal("password_hash"))
-        );
+        
+        studentBuilder.SetId(reader.GetInt32(reader.GetOrdinal("student_id")));
+        studentBuilder.SetFirstName(reader.GetString(reader.GetOrdinal("first_name")));
+        studentBuilder.SetLastName(reader.GetString(reader.GetOrdinal("last_name")));
+        studentBuilder.SetEmail(reader.GetString(reader.GetOrdinal("email")));
+        studentBuilder.SetUsername(reader.GetString(reader.GetOrdinal("username")));
+        studentBuilder.SetPassword(reader.GetString(reader.GetOrdinal("password_hash")));
+        
+        return studentBuilder.GetStudent();
     }
 
     public IEnumerable<Student> GetAll()
     {
+        IStudentBuilder studentBuilder = new StudentBuilder();
         using var conn = Database.Connect();
         using var cmd = new NpgsqlCommand("SELECT * FROM students ORDER BY student_id", conn);
         using var reader = cmd.ExecuteReader();
@@ -110,16 +111,15 @@ public class StudentRepository : IStudentRepository
 
         while (reader.Read())
         {
-            var student = new Student(
-                reader.GetInt32(reader.GetOrdinal("student_id")),
-                reader.GetString(reader.GetOrdinal("first_name")),
-                reader.GetString(reader.GetOrdinal("last_name")),
-                reader.GetString(reader.GetOrdinal("email")),
-                reader.GetString(reader.GetOrdinal("username")),
-                reader.GetString(reader.GetOrdinal("password_hash"))
-            );
+            
+            studentBuilder.SetId(reader.GetInt32(reader.GetOrdinal("student_id")));
+            studentBuilder.SetFirstName(reader.GetString(reader.GetOrdinal("first_name")));
+            studentBuilder.SetLastName(reader.GetString(reader.GetOrdinal("last_name")));
+            studentBuilder.SetEmail(reader.GetString(reader.GetOrdinal("email")));
+            studentBuilder.SetUsername(reader.GetString(reader.GetOrdinal("username")));
+            studentBuilder.SetPassword(reader.GetString(reader.GetOrdinal("password_hash")));
 
-            students.Add(student);
+            students.Add(studentBuilder.GetStudent());
         }
 
         return students;
