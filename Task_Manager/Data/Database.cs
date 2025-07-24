@@ -7,8 +7,17 @@ public class Database
 {
     
     private static string ConnectionString = Run();
-            
+    
+    private static Database _instance;
+    private Database(){Initialize(); }
+
+    public static Database GetInstance()
+    {
+        if (_instance == null)
+            _instance = new Database();
         
+        return _instance;
+    }
 
     private static string Run()
     {
