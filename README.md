@@ -2,7 +2,6 @@
 
 A Windows Forms (WinForms) application built using C# that enables students to efficiently manage and track their academic or personal tasks. it includes authentication, personalized task management, filtering with LINQ, and integration with PostgreSQL hosted on AWS.
 
----
 
 ## Features
 
@@ -44,7 +43,7 @@ Each task includes:
 
 ---
 
-## 🛠 Tech Stack
+##  Tech Stack
 
 | Component        | Technology                     |
 |------------------|--------------------------------|
