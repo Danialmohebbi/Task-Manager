@@ -28,23 +28,39 @@ public  static class FilterTask
     public static IEnumerable<TaskItem> FilterByCompleted(this IEnumerable<TaskItem> tasks, bool completed,bool reverse = false)
     {
         var query = (from t in tasks 
-            where t.Completed && completed  select t).ToList();
+            where t.Completed == completed  select t).ToList();
         
         if (reverse)
             query.Reverse();
         return query;
     }
     
-    public static IEnumerable<TaskItem> FilterByDueDateRange(this IEnumerable<TaskItem> tasks, DateTime start, DateTime end, bool reverse = false)
-    {
-        var query = (from t in tasks 
-            where t.DueDate >= start && t.DueDate <= end  select t).ToList();
+    public static IEnumerable<TaskItem> FilterEarlistDueDates(this IEnumerable<TaskItem> tasks,bool reverse = false) {
 
-        if (reverse) 
+        var query = (from t in tasks
+                     orderby t.DueDate
+                     select t).ToList();
+
+        if (reverse)
             query.Reverse();
         return query;
+
     }
-    
+
+    public static IEnumerable<TaskItem> SortCompletedDate(this IEnumerable<TaskItem> tasks, bool reverse = false)
+    {
+
+        var query = (from t in tasks
+                     orderby t.DueDate
+                     select t).ToList();
+
+        if (reverse)
+            query.Reverse();
+        return query;
+
+    }
+
+
     public static IEnumerable<TaskItem> FilterByKeyword(this IEnumerable<TaskItem> tasks, string keyword, bool reverse = false)
     {
         var query = (from t in tasks 
@@ -59,8 +75,7 @@ public  static class FilterTask
 
     public static IEnumerable<TaskItem> FilterOverdueTasks(this IEnumerable<TaskItem> tasks, DateTime currentDate, bool reverse = false)
     {
-        var notCompletedTasks = FilterByCompleted(tasks,false);
-        var query = (from t in notCompletedTasks 
+        var query = (from t in tasks 
             where t.DueDate < currentDate select t).ToList();
 
 
@@ -69,17 +84,6 @@ public  static class FilterTask
         return query;
     }
 
-    public static IEnumerable<TaskItem> FilterByCompletedAtRange(this IEnumerable<TaskItem> tasks, DateTime fromDateTime, DateTime toDateTime, bool reverse = false)
-    {
-        var query = (from t in tasks where t.CompletedAt.HasValue 
-                                           && t.CompletedAt.Value >= fromDateTime 
-                                           && t.CompletedAt.Value <= toDateTime 
-                                           select t).ToList();
-
-        if (reverse) 
-            query.Reverse();
-        return query;
-    }
 
     
     

@@ -65,7 +65,7 @@
             verify.Name = "verify";
             verify.Size = new Size(75, 23);
             verify.TabIndex = 4;
-            verify.Text = "verify";
+            verify.Text = "Verify";
             verify.UseVisualStyleBackColor = true;
             verify.Click += verify_Click;
             // 
@@ -78,8 +78,8 @@
             Controls.Add(inputedOtp);
             Controls.Add(GetOtp);
             Controls.Add(Email);
-            Name = "otp";
-            Text = "Form1";
+            Name = "OTP";
+            Text = "OTP Page";
             ResumeLayout(false);
             PerformLayout();
         }

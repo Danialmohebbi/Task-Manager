@@ -1,6 +1,6 @@
+using Newtonsoft.Json;
 using System.Net;
 using System.Net.Mail;
-using Newtonsoft.Json;
 using Task_Manager.App.Interfaces;
 using Task_Manager.Models;
 
@@ -72,11 +72,16 @@ public class StudentService
         return false;
     }
 
+    public void Edit(Student student)
+    {
+        _repo.Update(student);
+    }
+
     static SmptInfo GetInfo()
     {
         string curDir = AppContext.BaseDirectory;
         string root = Path.GetFullPath(Path.Combine(curDir, "..", "..", ".."));
-        string path = Path.Combine(root, "JsonInput", "smpt.json");
+        string path = Path.Combine(root, "Config", "smpt.json");
         string output = File.ReadAllText(path);
         return JsonConvert.DeserializeObject<SmptInfo>(output);
     }
@@ -113,5 +118,7 @@ public class StudentService
             return false;
         }
     }
+
+
 
 }

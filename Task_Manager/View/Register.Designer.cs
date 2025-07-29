@@ -82,7 +82,7 @@
             Register_Button.Name = "Register_Button";
             Register_Button.Size = new Size(75, 23);
             Register_Button.TabIndex = 5;
-            Register_Button.Text = "Register_Button";
+            Register_Button.Text = "Register";
             Register_Button.UseVisualStyleBackColor = true;
             Register_Button.Click += Register_Click;
             // 
@@ -97,8 +97,8 @@
             Controls.Add(Email);
             Controls.Add(LastName);
             Controls.Add(FirstName);
-            Name = "Register_Button";
-            Text = "Form1";
+            Name = "Register";
+            Text = "Register Page";
             ResumeLayout(false);
             PerformLayout();
         }

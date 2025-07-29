@@ -39,32 +39,31 @@ namespace Task_Manager.View
             overdueFilter = new DateTimePicker();
             keywordFilter = new TextBox();
             tagFilter = new TextBox();
-            earliestDueDateCheck = new CheckBox();
-            sortCompletedDate = new CheckBox();
             priorityLabel = new Label();
             completedLabel = new Label();
             recurrenceLabel = new Label();
             tagLabel = new Label();
             keywordLabel = new Label();
             overdueLabel = new Label();
+            logoutButton = new Button();
             SuspendLayout();
             // 
             // delete
             // 
-            delete.Location = new Point(42, 403);
+            delete.BackColor = Color.FromArgb(69, 104, 130);
+            delete.Font = new Font("Segoe UI", 13F);
+            delete.ForeColor = Color.Black;
+            delete.Location = new Point(42, 360);
             delete.Name = "delete";
             delete.Size = new Size(112, 48);
             delete.TabIndex = 1;
             delete.Text = "delete";
-            delete.UseVisualStyleBackColor = true;
-            delete.ForeColor = Color.Black;
-            delete.BackColor = ColorTranslator.FromHtml("#456882");
-            delete.Font = new Font("Segoe UI", 13F);
+            delete.UseVisualStyleBackColor = false;
             delete.Click += DeleteButton_Click;
             // 
             // toDeleteTaskId
             // 
-            toDeleteTaskId.Location = new Point(42, 374);
+            toDeleteTaskId.Location = new Point(42, 331);
             toDeleteTaskId.Name = "toDeleteTaskId";
             toDeleteTaskId.PlaceholderText = "Task id";
             toDeleteTaskId.Size = new Size(120, 23);
@@ -103,7 +102,7 @@ namespace Task_Manager.View
             // overdueFilter
             // 
             overdueFilter.Checked = false;
-            overdueFilter.Location = new Point(11, 345);
+            overdueFilter.Location = new Point(27, 291);
             overdueFilter.Name = "overdueFilter";
             overdueFilter.ShowCheckBox = true;
             overdueFilter.Size = new Size(200, 23);
@@ -127,30 +126,6 @@ namespace Task_Manager.View
             tagFilter.Size = new Size(154, 23);
             tagFilter.TabIndex = 8;
             tagFilter.TextChanged += Filter_SelectedIndexChanged;
-            // 
-            // earliestDueDateCheck
-            // 
-            earliestDueDateCheck.AutoSize = true;
-            earliestDueDateCheck.Font = new Font("Segoe UI", 13F);
-            earliestDueDateCheck.Location = new Point(11, 260);
-            earliestDueDateCheck.Name = "earliestDueDateCheck";
-            earliestDueDateCheck.Size = new Size(222, 29);
-            earliestDueDateCheck.TabIndex = 9;
-            earliestDueDateCheck.Text = "Sort Tasks by Due Dates";
-            earliestDueDateCheck.UseVisualStyleBackColor = true;
-            earliestDueDateCheck.CheckedChanged += Filter_SelectedIndexChanged;
-            // 
-            // sortCompletedDate
-            // 
-            sortCompletedDate.AutoSize = true;
-            sortCompletedDate.Font = new Font("Segoe UI", 13F);
-            sortCompletedDate.Location = new Point(12, 225);
-            sortCompletedDate.Name = "sortCompletedDate";
-            sortCompletedDate.Size = new Size(278, 29);
-            sortCompletedDate.TabIndex = 10;
-            sortCompletedDate.Text = "Sort Tasks by Completed Dates";
-            sortCompletedDate.UseVisualStyleBackColor = true;
-            sortCompletedDate.CheckedChanged += Filter_SelectedIndexChanged;
             // 
             // priorityLabel
             // 
@@ -206,25 +181,37 @@ namespace Task_Manager.View
             // 
             overdueLabel.AutoSize = true;
             overdueLabel.Font = new Font("Segoe UI", 13F);
-            overdueLabel.Location = new Point(11, 292);
+            overdueLabel.Location = new Point(12, 223);
             overdueLabel.Name = "overdueLabel";
             overdueLabel.Size = new Size(237, 50);
             overdueLabel.TabIndex = 16;
             overdueLabel.Text = "Select a date, to check tasks \nthat will be overdue by then.";
             // 
+            // logoutButton
+            // 
+            logoutButton.BackColor = Color.FromArgb(69, 104, 130);
+            logoutButton.Font = new Font("Segoe UI", 13F);
+            logoutButton.ForeColor = Color.Black;
+            logoutButton.Location = new Point(42, 425);
+            logoutButton.Name = "logoutButton";
+            logoutButton.Size = new Size(112, 23);
+            logoutButton.TabIndex = 17;
+            logoutButton.Text = "Log out";
+            logoutButton.UseVisualStyleBackColor = true;
+            logoutButton.Click += logoutClick;
+            // 
             // tasks
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(800, 503);
+            Controls.Add(logoutButton);
             Controls.Add(overdueLabel);
             Controls.Add(keywordLabel);
             Controls.Add(tagLabel);
             Controls.Add(recurrenceLabel);
             Controls.Add(completedLabel);
             Controls.Add(priorityLabel);
-            Controls.Add(sortCompletedDate);
-            Controls.Add(earliestDueDateCheck);
             Controls.Add(tagFilter);
             Controls.Add(keywordFilter);
             Controls.Add(overdueFilter);
@@ -248,13 +235,12 @@ namespace Task_Manager.View
         private DateTimePicker overdueFilter;
         private TextBox keywordFilter;
         private TextBox tagFilter;
-        private CheckBox earliestDueDateCheck;
-        private CheckBox sortCompletedDate;
         private Label priorityLabel;
         private Label completedLabel;
         private Label recurrenceLabel;
         private Label tagLabel;
         private Label keywordLabel;
         private Label overdueLabel;
+        private Button logoutButton;
     }
 }

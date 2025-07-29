@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Task_Manager.App.Extensions;
 using Task_Manager.App.Services;
 
 namespace Task_Manager
@@ -33,8 +34,8 @@ namespace Task_Manager
                 LastName.Text,
                 Email.Text,
                 Username.Text,
-                Password.Text
-                ));
+                Password.Text.MyHash()
+                )) ;
             if (success)
             {
                 _login.Show();

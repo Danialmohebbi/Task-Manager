@@ -17,10 +17,10 @@ namespace Task_Manager.View
 {
     public partial class tasks : Form
     {
-        TaskService _taskService;
-        int _studentId;
-        IEnumerable<TaskItem> _tasks;
-        DataGridView _dataGridView;
+        private TaskService _taskService;
+        private int _studentId;
+        private IEnumerable<TaskItem> _tasks;
+        private DataGridView _dataGridView;
         public tasks(TaskService taskService, int studentId)
         {
             BackColor = ColorTranslator.FromHtml("#1B3C53");
@@ -48,32 +48,21 @@ namespace Task_Manager.View
                 BackgroundColor = ColorTranslator.FromHtml("#D2C1B6")
             };
 
-            _dataGridView.ColumnHeadersDefaultCellStyle.Font = new Font(
-                "Segoe UI",
-                11,        
-                FontStyle.Bold
-            );
-
+            _dataGridView.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI",11,FontStyle.Bold);
             _dataGridView.RowsDefaultCellStyle.BackColor = ColorTranslator.FromHtml("#F9F3EF");
             _dataGridView.RowsDefaultCellStyle.ForeColor = Color.Black;
-
-
-
-            _tasks = _taskService.ViewTasks(_studentId);
-
             _dataGridView.DataBindingComplete += (s, e) =>
             {
                 _dataGridView.Columns["ID"].ReadOnly = true;
                 _dataGridView.Columns["Created At"].ReadOnly = true;
                 _dataGridView.Columns["Updated At"].ReadOnly = true;
-
             };
             _tasks = _taskService.ViewTasks(_studentId);
             Update();
 
             _dataGridView.KeyDown += DataGridView_KeyDown;
 
-            this.Controls.Add(_dataGridView);
+            Controls.Add(_dataGridView);
         }
         private void Update()
         {
@@ -143,7 +132,7 @@ namespace Task_Manager.View
 
             if (string.IsNullOrEmpty(title) || dueDateObj == null || dueDateObj == DBNull.Value || !DateTime.TryParse(dueDateObj.ToString(), out _))
             {
-                MessageBox.Show("Invalid data. Title and Due Date are required.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Invalid Data");
                 return;
             }
 
@@ -204,8 +193,6 @@ namespace Task_Manager.View
             DateTime selectedDate = overdueFilter.Value.Date;
             string? keyword = keywordFilter.Text;
             string? tag = tagFilter.Text;
-            bool sortByDueDate = earliestDueDateCheck.Checked;
-            bool sortByCompletedDate = sortCompletedDate.Checked;
 
             IEnumerable<TaskItem> tasks = _taskService.ViewTasks(_studentId);
 
@@ -221,11 +208,6 @@ namespace Task_Manager.View
             if (overdueFilter.Checked)
                 tasks = tasks.FilterOverdueTasks(selectedDate);
 
-            if (sortByDueDate)
-                tasks = tasks.FilterEarlistDueDates();
-
-            if (sortByCompletedDate)
-                tasks = tasks.SortCompletedDate();
             if (keyword != "")
                 tasks = tasks.FilterByKeyword(keyword);
             if (tag != "")
@@ -235,7 +217,13 @@ namespace Task_Manager.View
             Update();
         }
 
+        private void logoutClick(object sender, EventArgs e)
+        {
+            new Login().Show();
+            Close();
+            
 
+        }
     }
 }
 

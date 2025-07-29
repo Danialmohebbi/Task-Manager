@@ -23,7 +23,7 @@ public class Database
     {
         string curDir = AppContext.BaseDirectory;
         string root = Path.GetFullPath(Path.Combine(curDir, "..", "..", ".."));
-        string path = Path.Combine(root, "JsonInput", "database.json");
+        string path = Path.Combine(root, "Config", "database.json");
         string output = File.ReadAllText(path);
         DatabaseInfo db1 = JsonConvert.DeserializeObject<DatabaseInfo>(output);
         return $"Host={db1.Host};" +
@@ -41,8 +41,10 @@ public class Database
         return conn;
     }
 
+
     public static void Initialize()
     {
+       
         using var conn = Connect();
         using var studentTable = new NpgsqlCommand(
             @"CREATE TABLE IF NOT EXISTS students (
@@ -79,7 +81,6 @@ public class Database
     public static void ShowStudents()
     {
         using var conn = Connect();
-        
         using var cmd = new NpgsqlCommand("SELECT * FROM students ORDER BY student_id", conn);
         using var reader = cmd.ExecuteReader();
         

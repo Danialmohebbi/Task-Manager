@@ -78,7 +78,7 @@
             getOtp.AutoSize = true;
             getOtp.Location = new Point(86, 244);
             getOtp.Name = "getOtp";
-            getOtp.Size = new Size(60, 15);
+            getOtp.Size = new Size(49, 15);
             getOtp.TabIndex = 4;
             getOtp.TabStop = true;
             getOtp.Text = "Get otp ";

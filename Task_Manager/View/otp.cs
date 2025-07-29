@@ -37,17 +37,22 @@ namespace Task_Manager
         {
             bool success = _studentservice
                 .VerifyOtp(
-                    Email.Text,inputedOtp.Text
+                    Email.Text, inputedOtp.Text
                 );
-            if ( success )
+            if (success)
             {
-                new tasks(new TaskService(new TaskRepository()),_studentservice.GetUserByLogin(Email.Text).Id).Show();
-                this.Close();
+                Close();
+                new ChangePassword(_login, new StudentService(new StudentRepository())).Show();
             }
             else
             {
                 MessageBox.Show("Incorrect!");
             }
+        }
+
+        private void Email_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

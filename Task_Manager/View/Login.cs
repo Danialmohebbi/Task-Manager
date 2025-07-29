@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Task_Manager.App.Extensions;
 using Task_Manager.App.Services;
 using Task_Manager.Data.Repositories;
 using Task_Manager.View;
@@ -36,7 +37,7 @@ namespace Task_Manager
             string username = Username_Input.Text;
             string password = Password_Input.Text;
 
-            if (_studentService.Login(username, password))
+            if (_studentService.Login(username, password.MyHash()))
             {
                 new tasks(new TaskService(new TaskRepository()), _studentService.GetUserByLogin(username).Id).Show();
                 Hide();
@@ -60,5 +61,6 @@ namespace Task_Manager
             otp.Show();
             Hide();
         }
+
     }
 }
