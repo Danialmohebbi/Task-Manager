@@ -18,7 +18,10 @@ public class Database
         
         return _instance;
     }
-
+    /// <summary>
+    /// Get the info needed to establish the connection.
+    /// </summary>
+    /// <returns></returns>
     private static string Run()
     {
         string curDir = AppContext.BaseDirectory;
@@ -34,6 +37,10 @@ public class Database
                $"SSL Mode={db1.SSL};" +
                $"Trust Server Certificate={db1.ServerCertification}";
     }
+    /// <summary>
+    /// Connect to the database
+    /// </summary>
+    /// <returns></returns>
     public static NpgsqlConnection Connect()
     {
         var conn = new NpgsqlConnection(ConnectionString);
@@ -41,7 +48,9 @@ public class Database
         return conn;
     }
 
-
+    /// <summary>
+    /// Create necessary Tables
+    /// </summary>
     public static void Initialize()
     {
        
@@ -77,7 +86,9 @@ public class Database
         tasksTable.ExecuteNonQuery();
 
     }
-
+    /// <summary>
+    /// Show the students currently in the student table
+    /// </summary>
     public static void ShowStudents()
     {
         using var conn = Connect();
@@ -93,7 +104,9 @@ public class Database
                 );
         }
     }
-    
+    /// <summary>
+    /// Show the tasks currently in the tasks table
+    /// </summary>
     public static void ShowTasks()
     {
         using var conn = Connect();

@@ -1,5 +1,7 @@
 namespace Task_Manager.Models;
-
+/// <summary>
+/// Represent the level of importance of a task.
+/// </summary>
 public enum Priority
 {
     Low=0,

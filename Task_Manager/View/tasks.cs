@@ -15,6 +15,9 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Task_Manager.View
 {
+    /// <summary>
+    /// Represents the Tasks Form where students can view,create,edit,filter and delete their tasks, or just log out.
+    /// </summary>
     public partial class tasks : Form
     {
         private TaskService _taskService;
@@ -113,7 +116,11 @@ namespace Task_Manager.View
                 task.DueDate
             );
         }
-
+        /// <summary>
+        /// Handle Logic for deleting a task upon clicked.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DeleteButton_Click(object sender, EventArgs e)
         {
             int taskId = int.Parse(toDeleteTaskId.Text);
@@ -173,7 +180,7 @@ namespace Task_Manager.View
             BeginInvoke(new MethodInvoker(Update));
         }
 
-
+    
         private void DataGridView_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter && _dataGridView.CurrentRow != null)
@@ -184,7 +191,12 @@ namespace Task_Manager.View
                 SaveTaskFromRow(_dataGridView.CurrentRow);
             }
         }
-
+        
+        /// <summary>
+        /// Handle the logic for filtering.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Filter_SelectedIndexChanged(object sender, EventArgs e)
         {
             string? chosenPriority = priorityFilter.SelectedItem?.ToString();
@@ -216,7 +228,11 @@ namespace Task_Manager.View
             _tasks = tasks;
             Update();
         }
-
+        /// <summary>
+        /// handle the logic for logging out.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void logoutClick(object sender, EventArgs e)
         {
             new Login().Show();

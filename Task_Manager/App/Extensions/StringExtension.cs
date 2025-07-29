@@ -8,6 +8,11 @@ namespace Task_Manager.App.Extensions
 {
     public static class StringExtension
     {
+        /// <summary>
+        /// Generate a simple hash value from a string
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns>A string representation of the computed hash as an unassigned 32-bit integer.</returns>
         public static string MyHash(this string str)
         {
             int h = 0;
@@ -15,7 +20,7 @@ namespace Task_Manager.App.Extensions
             {
                 h = (256 * h) + c;
             }
-            return (h % (2^32)).ToString();
+            return ((uint) h).ToString();
 
         }
     }

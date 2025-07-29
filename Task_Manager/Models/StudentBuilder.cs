@@ -1,6 +1,8 @@
 namespace Task_Manager.Models;
 
-
+/// <summary>
+/// Defines methods to incrementally build a Student object.
+/// </summary>
 public interface IStudentBuilder
 {
     void SetId(int id);
@@ -13,6 +15,9 @@ public interface IStudentBuilder
     Student GetStudent();
 }
 
+/// <summary>
+/// Implements the IStudentBuilder interface to build a Student Object with validation.
+/// </summary>
 public class StudentBuilder : IStudentBuilder
 {
     private int _id;

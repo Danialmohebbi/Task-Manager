@@ -4,7 +4,13 @@ namespace Task_Manager.App.Extensions;
 
 public  static class FilterTask
 {
-   
+   /// <summary>
+   /// Filters a collection of tasks with respect to a priority.
+   /// </summary>
+   /// <param name="tasks"></param>
+   /// <param name="priority"></param>
+   /// <param name="reverse"></param>
+   /// <returns></returns>
     public static IEnumerable<TaskItem> FilterByPriority(this IEnumerable<TaskItem> tasks, Priority? priority,bool reverse = false)
     {
         var query = (from t in tasks 
@@ -14,7 +20,13 @@ public  static class FilterTask
             query.Reverse();
         return query;
     }
-    
+    /// <summary>
+    /// Filters a collection of tasks with respect to a recurrence.
+    /// </summary>
+    /// <param name="tasks"></param>
+    /// <param name="recurrence"></param>
+    /// <param name="reverse"></param>
+    /// <returns></returns>
     public static IEnumerable<TaskItem> FilterByRecurrence(this IEnumerable<TaskItem> tasks, Recurrence? recurrence,bool reverse = false)
     {
         var query = (from t in tasks 
@@ -24,43 +36,33 @@ public  static class FilterTask
             query.Reverse();
         return query;
     }
-    
-    public static IEnumerable<TaskItem> FilterByCompleted(this IEnumerable<TaskItem> tasks, bool completed,bool reverse = false)
+
+    /// <summary>
+    /// Filters a collection of tasks with respect to completeness.
+    /// </summary>
+    /// <param name="tasks"></param>
+    /// <param name="completed"></param>
+    /// <param name="reverse"></param>
+    /// <returns></returns>
+    public static IEnumerable<TaskItem> FilterByCompleted(this IEnumerable<TaskItem> tasks, bool completed,
+        bool reverse = false)
     {
-        var query = (from t in tasks 
-            where t.Completed == completed  select t).ToList();
-        
-        if (reverse)
-            query.Reverse();
-        return query;
-    }
-    
-    public static IEnumerable<TaskItem> FilterEarlistDueDates(this IEnumerable<TaskItem> tasks,bool reverse = false) {
-
         var query = (from t in tasks
-                     orderby t.DueDate
-                     select t).ToList();
+            where t.Completed == completed
+            select t).ToList();
 
         if (reverse)
             query.Reverse();
         return query;
-
     }
 
-    public static IEnumerable<TaskItem> SortCompletedDate(this IEnumerable<TaskItem> tasks, bool reverse = false)
-    {
-
-        var query = (from t in tasks
-                     orderby t.DueDate
-                     select t).ToList();
-
-        if (reverse)
-            query.Reverse();
-        return query;
-
-    }
-
-
+    /// <summary>
+    /// Filters a collection of tasks with respect to a keyword.
+    /// </summary>
+    /// <param name="tasks"></param>
+    /// <param name="keyword"></param>
+    /// <param name="reverse"></param>
+    /// <returns></returns>
     public static IEnumerable<TaskItem> FilterByKeyword(this IEnumerable<TaskItem> tasks, string keyword, bool reverse = false)
     {
         var query = (from t in tasks 
@@ -72,7 +74,13 @@ public  static class FilterTask
             query.Reverse();
         return query;
     }
-
+    /// <summary>
+    /// Filters overdue tasks out of a collection of tasks.
+    /// </summary>
+    /// <param name="tasks"></param>
+    /// <param name="currentDate"></param>
+    /// <param name="reverse"></param>
+    /// <returns></returns>
     public static IEnumerable<TaskItem> FilterOverdueTasks(this IEnumerable<TaskItem> tasks, DateTime currentDate, bool reverse = false)
     {
         var query = (from t in tasks 
@@ -84,19 +92,14 @@ public  static class FilterTask
         return query;
     }
 
-
     
-    
-    public static IEnumerable<TaskItem> FilterByCreatedDate(this IEnumerable<TaskItem> tasks, DateTime lowerBound,bool reverse = false)
-    {
-        var query = (from t in tasks 
-            where t.CreatedAt >= lowerBound  select t).ToList();
-        
-        if (reverse)
-            query.Reverse();
-        return query;
-    }
-    
+    /// <summary>
+    /// Filters a collection of tasks with respect to a tag.
+    /// </summary>
+    /// <param name="tasks"></param>
+    /// <param name="tag"></param>
+    /// <param name="reverse"></param>
+    /// <returns></returns>
     public static IEnumerable<TaskItem> FilterByTag(this IEnumerable<TaskItem> tasks, String tag,bool reverse = false)
     {
         var query = (from t in tasks 

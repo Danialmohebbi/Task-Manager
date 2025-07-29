@@ -15,6 +15,10 @@ using Task_Manager.Models;
 
 namespace Task_Manager.View
 {
+    /// <summary>
+    /// Represents the Changing Password form for students.
+    /// Handles Password Change Logic.
+    /// </summary>
     public partial class ChangePassword : Form
     {
         StudentService _studentService;
@@ -27,7 +31,12 @@ namespace Task_Manager.View
             BackColor = System.Drawing.Color.LightBlue;
             StartPosition = FormStartPosition.CenterScreen;
         }
-
+        
+        /// <summary>
+        /// Handle Change Password Logic
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void changePassowrd(object sender, EventArgs e)
         {
             StudentBuilder builder = new StudentBuilder();

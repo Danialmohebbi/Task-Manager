@@ -1,5 +1,7 @@
 namespace Task_Manager.Models;
-
+/// <summary>
+/// Defines methods to incrementally build a TaskItem object.
+/// </summary>
 public interface ITaskItemBuilder
 {
     void SetId(int id);
@@ -18,7 +20,9 @@ public interface ITaskItemBuilder
     TaskItem GetTaskItem();
 }
 
-
+/// <summary>
+/// Implements the ITaskItembuilder interface to build a TaskItem Object with validation.
+/// </summary>
 public class TaskItemBuilder : ITaskItemBuilder
 {
     int _id;

@@ -12,6 +12,9 @@ using Task_Manager.App.Services;
 
 namespace Task_Manager
 {
+    /// <summary>
+    /// Represents the Register Form.
+    /// </summary>
     public partial class Register : Form
     {
         Login _login;
@@ -24,7 +27,12 @@ namespace Task_Manager
             BackColor = System.Drawing.Color.LightBlue;
             StartPosition = FormStartPosition.CenterScreen;
         }
-
+        
+        /// <summary>
+        /// Handle the logic for registering.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Register_Click(object sender, EventArgs e)
         {
             bool success = _studentService.Register(

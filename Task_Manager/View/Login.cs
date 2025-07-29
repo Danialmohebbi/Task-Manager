@@ -16,6 +16,10 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace Task_Manager
 {
+    /// <summary>
+    /// Represents the login form for students.
+    /// Handles Login, navigation for registeration and otp.
+    /// </summary>
 
     public partial class Login : Form
     {
@@ -31,7 +35,11 @@ namespace Task_Manager
 
 
 
-
+        /// <summary>
+        /// Handle Logic button click.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void login_Click(object sender, EventArgs e)
         {
             string username = Username_Input.Text;
@@ -47,14 +55,22 @@ namespace Task_Manager
                 MessageBox.Show("username/email or password is incorrect!");
             }
         }
-
+        /// <summary>
+        /// Handle the logic for Register Button Click.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void register_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Register registerForm = new Register(this, _studentService);
             registerForm.Show();
             Hide();
         }
-
+        /// <summary>
+        /// Handle the logic for OTP Button Click.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GetOtp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             otp otp = new otp(this, _studentService);

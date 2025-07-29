@@ -13,6 +13,10 @@ using Task_Manager.View;
 
 namespace Task_Manager
 {
+    /// <summary>
+    /// Represents the OTP form for students.
+    /// Handles the logic for otp.
+    /// </summary>
     public partial class otp : Form
     {
         private StudentService _studentservice;
@@ -25,14 +29,23 @@ namespace Task_Manager
             BackColor = System.Drawing.Color.LightBlue;
             StartPosition = FormStartPosition.CenterScreen;
         }
-
+        
+        /// <summary>
+        /// Handle the logic for sending the OTP.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void getOtp_Click(object sender, EventArgs e)
         {
             string otp = _studentservice.GenerateOtp();
             _studentservice.StoreOtp(Email.Text, otp);
             _studentservice.SendEmail(Email.Text, otp);
         }
-
+        /// <summary>
+        /// Handles the logic for verification of the inputted OTP.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void verify_Click(object sender, EventArgs e)
         {
             bool success = _studentservice

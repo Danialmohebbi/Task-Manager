@@ -1,5 +1,7 @@
 namespace Task_Manager.Models;
-
+/// <summary>
+/// Holds the database info extracted from JSON.
+/// </summary>
 public struct DatabaseInfo
 {
     public String Host { get; set; }

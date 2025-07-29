@@ -1,5 +1,7 @@
 namespace Task_Manager.Models;
-
+/// <summary>
+/// Represents the Smpt Info needed to send emails.
+/// </summary>
 public struct SmptInfo
 {
     public String FromEmail { get; set; }
