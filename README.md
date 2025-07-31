@@ -1,98 +1,167 @@
-# Student Task Manager
+# 🎓 Student Task Manager
 
-A Windows Forms (WinForms) application built using C# that enables students to efficiently manage and track their academic or personal tasks. it includes authentication, personalized task management, filtering with LINQ, and integration with PostgreSQL hosted on AWS.
-
-
-## Features
-
-### 🔐 Authentication & Registration
-- Students can **register** with a **username**, **email**, and **password**.
-- Login using either **username or email**.
-- **Forgot password**: OTP (One-Time Password) is sent via email for secure verification and reset.
-
-### 📋 Task Management
-Students can:
-1. **View Tasks**
-2. **Add New Tasks**
-3. **Edit Existing Tasks**
-4. **Mark Tasks as Done**
-5. **Delete Tasks**
-6. **Logout**
-
-Each task includes:
-- Title  
-- Description  
-- Due Date  
-- Completed (Yes/No)  
-- Priority (Low / Medium / High)  
-- Tag  
-- Recurrence (Daily / Weekly / Monthly / Yearly)  
-- Created At  
-- Updated At  
-- Completed At  
-
-### 🔍 Filtering and Search
-- Filter tasks by:
-  - **Priority**
-  - **Completion status**
-  - **Recurrence**
-  - **Due date**
-  - **Keyword**
-  - **Tag**
-- Implemented using **LINQ** for clean and efficient querying.
+A Windows Forms (WinForms) application built with C# for students to manage academic and personal tasks. Includes authentication, task filtering, PostgreSQL integration via AWS, and email-based password recovery.
 
 ---
 
-##  Tech Stack
+## ✅ Features
+
+### 🔐 Authentication
+- Student **registration** using username, email, and password
+- **Login** with either username or email
+- **Forgot password** via email OTP verification
+
+### 🗂 Task Management
+Students can:
+- **View** tasks
+- **Add** new tasks
+- **Edit** existing tasks
+- **Delete** tasks
+- **Mark** tasks as completed
+- **Logout**
+
+### 🧾 Task Attributes
+Each task includes:
+- `Title`
+- `Description`
+- `Due Date`
+- `Completed` (Yes/No)
+- `Priority` (Low / Medium / High)
+- `Category` (Tag)
+- `Recurrence` (Daily / Weekly / Monthly / Yearly)
+- `Created At`
+- `Updated At`
+- `Completed At`
+
+### 🔍 Filtering & Search (via LINQ)
+Filter or search tasks by:
+- **Priority**
+- **Completion status**
+- **Recurrence**
+- **Due date**
+- **Keyword**
+- **Category**
+
+---
+
+## 👥 User Documentation
+
+### 🛠️ How to Run the App
+
+1. **Download or Clone the Project**
+   ```bash
+   git clone https://github.com/your-username/student-task-manager.git
+   ```
+
+2. **Set Up Configuration Files**
+
+   Inside the `Task_Manager/Config` folder, create two files:
+
+   #### ➤ `databaseinfo.json`
+   ```json
+   {
+     "Host": "your-db-host",
+     "Port": 5432,
+     "Username": "your_username",
+     "Password": "your_password",
+     "Database": "your_database",
+     "SSL": "Require",
+     "ServerCertification": true
+   }
+   ```
+
+   #### ➤ `smpt.json`
+   ```json
+   {
+     "fromEmail": "your_email",
+     "Password": "your_email_password",
+     "SmptHost": "smtp.yourmail.com",
+     "SmptPort": 587
+   }
+   ```
+
+3. **Open in Visual Studio**
+   - Build and Run the application (F5)
+
+---
+
+### 🧑‍🏫 How to Use the App
+
+#### 1. Register or Log In
+- Register using your **name**, **email**, and **password**
+- Login with either **email** or **username**
+
+#### 2. Forgot Password?
+- Click "Forgot Password"
+- Enter your email
+- An OTP will be sent to reset your password securely
+
+#### 3. Task Management
+- Click **Add Task** to create a task
+- Double-click a task to **Edit**
+- Use **checkbox** or button to mark a task as **Completed**
+- Click **Delete** to remove a task
+
+#### 4. Filtering Tasks
+Use the built-in filters or search bar to find tasks by:
+- Priority
+- Tag 
+- Overdue
+- Recurrence type 
+- Keyword in title or description
+
+#### 5. Logging Out
+- Click the **Logout** button to end your session
+
+---
+
+## 👨‍💻 Developer Documentation
+
+### Tech Stack
 
 | Component        | Technology                     |
 |------------------|--------------------------------|
 | Language         | C#                             |
 | Framework        | .NET Windows Forms (WinForms)  |
 | Database         | PostgreSQL                     |
-| Hosting          | Amazon Web Services (AWS RDS)  |
-| Email Service    | SMTP-based email OTP sender    |
+| Hosting          | AWS RDS                        |
+| Email Service    | SMTP                           |
 
 ---
 
-## Database Design
+### 🗄️ Database Schema
 
-- **Students Table**
-  - `Id`, `FirstName`, `LastName`, `Username`, `Email`, `Password`
+#### 👤 Students Table
 
-- **Tasks Table**
-  - Linked to `StudentId`
-  - Includes all task attributes listed above
+
+| Field        | Type         | Description                            |
+|--------------|--------------|----------------------------------------|
+| student_id   | SERIAL       | Primary key                            |
+| first_name   | VARCHAR(50)  | Required                               |
+| last_name    | VARCHAR(50)  | Optional                               |
+| email        | VARCHAR(100) | Must be unique and valid format        |
+| username     | VARCHAR(100) | Must be unique                         |
+| password_hash| VARCHAR(255) | Hashed password                        |
 
 ---
 
-##  How to Run
+#### 📋 Tasks Table
 
-1. **Clone this repository**
-   ```bash
-   git clone https://github.com/your-username/student-task-manager.git
-2. **Add Config**
 
-Create a `Config` folder inside the `Task_Manager` directory. Then add two files inside it: `databaseinfo.json` and `smpt.json`.
+| Field         | Type         | Description                                  |
+|---------------|--------------|----------------------------------------------|
+| task_id       | SERIAL        | Primary key                                 |
+| student_id    | INT           | Foreign key to `students.student_id`        |
+| title         | VARCHAR(100)  | Task title (required)                       |
+| description   | TEXT          | Optional task description                   |
+| due_date      | TIMESTAMP     | Task deadline                               |
+| completed     | BOOLEAN       | Default false                               |
+| priority      | INT           | 0 (Low), 1 (Medium), 2 (High)               |
+| category      | VARCHAR(100)  | Task tag/category                           |
+| recurrence    | INT           | 1=Daily, 7=Weekly, 30=monthly,365=yearly.   |
+| created_at    | TIMESTAMP     | Auto-generated when created                 |
+| updated_at    | TIMESTAMP     | Auto-updated when edited                    |
+| completed_at  | TIMESTAMP     | Set when task is marked as completed        |
 
-### ➤ `Task_Manager/Config/databaseinfo.json`
-```json
-{
-  "Host": "URL",
-  "Port": 5432,
-  "Username": "your_username",
-  "Password": "your_password",
-  "Database": "database_name",
-  "SSL": "Require",
-  "ServerCertification": true
-}
-```
+---
 
-### ➤ `Task_Manager/Config/smpt.json`
-```json
-{
-  "fromEmail": "your_email",
-  "Password": "your_password",
-  "SmptHost": "your_mail_smpt_host",
-  "SmptPort": 587
-}
