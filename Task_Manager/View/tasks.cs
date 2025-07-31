@@ -51,6 +51,8 @@ namespace Task_Manager.View
                 BackgroundColor = ColorTranslator.FromHtml("#D2C1B6")
             };
 
+            _dataGridView.DataError += DataGridView_DataErrorFix;
+
             _dataGridView.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI",11,FontStyle.Bold);
             _dataGridView.RowsDefaultCellStyle.BackColor = ColorTranslator.FromHtml("#F9F3EF");
             _dataGridView.RowsDefaultCellStyle.ForeColor = Color.Black;
@@ -66,6 +68,12 @@ namespace Task_Manager.View
             _dataGridView.KeyDown += DataGridView_KeyDown;
 
             Controls.Add(_dataGridView);
+        }
+
+        private void DataGridView_DataErrorFix(object sender, DataGridViewDataErrorEventArgs e)
+        {
+            MessageBox.Show("Invalid Input format, Please correct the input format and fill in all the obligatory fields.");
+            e.Cancel = false;
         }
         private void Update()
         {
@@ -123,72 +131,93 @@ namespace Task_Manager.View
         /// <param name="e"></param>
         private void DeleteButton_Click(object sender, EventArgs e)
         {
-            int taskId = int.Parse(toDeleteTaskId.Text);
-            _taskService.DeleteTask(taskId, _studentId);
-            _tasks = _taskService.ViewTasks(_studentId);
-            Update();
+            try
+            {
+                int taskId = int.Parse(toDeleteTaskId.Text);
+                _taskService.DeleteTask(taskId, _studentId);
+                _tasks = _taskService.ViewTasks(_studentId);
+                Update();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
 
         private void SaveTaskFromRow(DataGridViewRow row)
         {
-            if (row.IsNewRow) return;
+            try
+            {
+                if (row.IsNewRow) return;
 
-            string title = row.Cells["Title"].Value?.ToString()?.Trim();
-            var dueDateObj = row.Cells["Due Date At"].Value;
+                string title = row.Cells["Title"].Value?.ToString()?.Trim();
+                var dueDateObj = row.Cells["Due Date At"].Value;
 
-            if (string.IsNullOrEmpty(title) || dueDateObj == null || dueDateObj == DBNull.Value || !DateTime.TryParse(dueDateObj.ToString(), out _))
+                if (string.IsNullOrEmpty(title) || dueDateObj == null || dueDateObj == DBNull.Value || !DateTime.TryParse(dueDateObj.ToString(), out _))
+                {
+                    MessageBox.Show("Invalid Data");
+                    return;
+                }
+
+                int id = row.Cells["ID"].Value != DBNull.Value ? Convert.ToInt32(row.Cells["ID"].Value) : 0;
+                var taskItem = new TaskItem(
+                    id,
+                    _studentId,
+                    title,
+                    row.Cells["Description"].Value?.ToString() ?? "",
+                    Convert.ToDateTime(row.Cells["Due Date At"].Value),
+                    row.Cells["Completed"].Value != DBNull.Value && Convert.ToBoolean(row.Cells["Completed"].Value),
+                    row.Cells["Priority"].Value != DBNull.Value
+                        ? (Priority?)Enum.ToObject(typeof(Priority), row.Cells["Priority"].Value)
+                        : null,
+                    row.Cells["Tag"].Value?.ToString(),
+                    row.Cells["Recurrence"].Value != DBNull.Value
+                        ? (Recurrence?)Enum.ToObject(typeof(Recurrence), row.Cells["Recurrence"].Value)
+                        : null,
+                    row.Cells["Created At"].Value != DBNull.Value
+                        ? Convert.ToDateTime(row.Cells["Created At"].Value)
+                        : DateTime.Now,
+                    DateTime.Now,
+                    (row.Cells["Completed"].Value != DBNull.Value && Convert.ToBoolean(row.Cells["Completed"].Value)) &&
+                    (row.Cells["Completed At"].Value == DBNull.Value || row.Cells["Completed At"].Value == null)
+                        ? DateTime.Now
+                        : row.Cells["Completed At"].Value != DBNull.Value
+                            ? (DateTime?)Convert.ToDateTime(row.Cells["Completed At"].Value)
+                            : null
+
+                );
+
+
+                if (id == 0)
+                    _taskService.AddTask(taskItem);
+                else
+                    _taskService.EditTask(taskItem);
+                _tasks = _taskService.ViewTasks(_studentId);
+                BeginInvoke(new MethodInvoker(Update));
+            }
+            catch (Exception ex)
             {
                 MessageBox.Show("Invalid Data");
-                return;
             }
-
-            int id = row.Cells["ID"].Value != DBNull.Value ? Convert.ToInt32(row.Cells["ID"].Value) : 0;
-            var taskItem = new TaskItem(
-                id,
-                _studentId,
-                title,
-                row.Cells["Description"].Value?.ToString() ?? "",
-                Convert.ToDateTime(row.Cells["Due Date At"].Value),
-                row.Cells["Completed"].Value != DBNull.Value && Convert.ToBoolean(row.Cells["Completed"].Value),
-                row.Cells["Priority"].Value != DBNull.Value
-                    ? (Priority?)Enum.ToObject(typeof(Priority), row.Cells["Priority"].Value)
-                    : null,
-                row.Cells["Tag"].Value?.ToString(),
-                row.Cells["Recurrence"].Value != DBNull.Value
-                    ? (Recurrence?)Enum.ToObject(typeof(Recurrence), row.Cells["Recurrence"].Value)
-                    : null,
-                row.Cells["Created At"].Value != DBNull.Value
-                    ? Convert.ToDateTime(row.Cells["Created At"].Value)
-                    : DateTime.Now,
-                DateTime.Now,
-                (row.Cells["Completed"].Value != DBNull.Value && Convert.ToBoolean(row.Cells["Completed"].Value)) &&
-                (row.Cells["Completed At"].Value == DBNull.Value || row.Cells["Completed At"].Value == null)
-                    ? DateTime.Now
-                    : row.Cells["Completed At"].Value != DBNull.Value
-                        ? (DateTime?)Convert.ToDateTime(row.Cells["Completed At"].Value)
-                        : null
-
-            );
-
-
-            if (id == 0)
-                _taskService.AddTask(taskItem);
-            else
-                _taskService.EditTask(taskItem);
-            _tasks = _taskService.ViewTasks(_studentId);
-            BeginInvoke(new MethodInvoker(Update));
         }
 
     
         private void DataGridView_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter && _dataGridView.CurrentRow != null)
+            try
             {
-                e.Handled = true;
-                _dataGridView.EndEdit();
+                if (e.KeyCode == Keys.Enter && _dataGridView.CurrentRow != null)
+                {
+                    e.Handled = true;
+                    _dataGridView.EndEdit();
 
-                SaveTaskFromRow(_dataGridView.CurrentRow);
+                    SaveTaskFromRow(_dataGridView.CurrentRow);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
         
@@ -199,34 +228,41 @@ namespace Task_Manager.View
         /// <param name="e"></param>
         private void Filter_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string? chosenPriority = priorityFilter.SelectedItem?.ToString();
-            string? chosenCompeletions = completedFilter.SelectedItem?.ToString();
-            string? chosenRecurrence = recurrenceFilter.SelectedItem?.ToString();
-            DateTime selectedDate = overdueFilter.Value.Date;
-            string? keyword = keywordFilter.Text;
-            string? tag = tagFilter.Text;
+            try
+            {
+                string? chosenPriority = priorityFilter.SelectedItem?.ToString();
+                string? chosenCompeletions = completedFilter.SelectedItem?.ToString();
+                string? chosenRecurrence = recurrenceFilter.SelectedItem?.ToString();
+                DateTime selectedDate = overdueFilter.Value.Date;
+                string? keyword = keywordFilter.Text;
+                string? tag = tagFilter.Text;
 
-            IEnumerable<TaskItem> tasks = _taskService.ViewTasks(_studentId);
+                IEnumerable<TaskItem> tasks = _taskService.ViewTasks(_studentId);
 
-            if (!string.IsNullOrEmpty(chosenPriority) && Enum.TryParse<Priority>(chosenPriority, out var selectedPriority))
-                tasks = tasks.FilterByPriority(selectedPriority);
+                if (!string.IsNullOrEmpty(chosenPriority) && Enum.TryParse<Priority>(chosenPriority, out var selectedPriority))
+                    tasks = tasks.FilterByPriority(selectedPriority);
 
-            if (!string.IsNullOrEmpty(chosenCompeletions) && bool.TryParse(chosenCompeletions, out var selectedCompeletions))
-                tasks = tasks.FilterByCompleted(selectedCompeletions);
+                if (!string.IsNullOrEmpty(chosenCompeletions) && bool.TryParse(chosenCompeletions, out var selectedCompeletions))
+                    tasks = tasks.FilterByCompleted(selectedCompeletions);
 
-            if (!string.IsNullOrEmpty(chosenRecurrence) && Enum.TryParse<Recurrence>(chosenRecurrence, out var selectedRecurrence))
-                tasks = tasks.FilterByRecurrence(selectedRecurrence);
+                if (!string.IsNullOrEmpty(chosenRecurrence) && Enum.TryParse<Recurrence>(chosenRecurrence, out var selectedRecurrence))
+                    tasks = tasks.FilterByRecurrence(selectedRecurrence);
 
-            if (overdueFilter.Checked)
-                tasks = tasks.FilterOverdueTasks(selectedDate);
+                if (overdueFilter.Checked)
+                    tasks = tasks.FilterOverdueTasks(selectedDate);
 
-            if (keyword != "")
-                tasks = tasks.FilterByKeyword(keyword);
-            if (tag != "")
-                tasks = tasks.FilterByTag(tag);
+                if (keyword != "")
+                    tasks = tasks.FilterByKeyword(keyword);
+                if (tag != "")
+                    tasks = tasks.FilterByTag(tag);
 
-            _tasks = tasks;
-            Update();
+                _tasks = tasks;
+                Update();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
         /// <summary>
         /// handle the logic for logging out.
