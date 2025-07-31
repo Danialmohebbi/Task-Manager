@@ -1,6 +1,6 @@
 # 🎓 Student Task Manager
 
-A Windows Forms (WinForms) application built with C# for students to manage academic and personal tasks. Includes authentication, task filtering, PostgreSQL integration via AWS, and email-based password recovery.
+A Windows Forms (WinForms) application built with C# for students to manage any tasks. Includes authentication, task filtering, PostgreSQL integration via AWS, and email-based password recovery.
 
 ---
 
@@ -48,7 +48,7 @@ Filter or search tasks by:
 
 ### 🛠️ How to Run the App
 
-1. **Download or Clone the Project**
+1. **Clone the Project**
    ```bash
    git clone https://github.com/your-username/student-task-manager.git
    ```
@@ -94,13 +94,13 @@ Filter or search tasks by:
 #### 2. Forgot Password?
 - Click "Forgot Password"
 - Enter your email
-- An OTP will be sent to reset your password securely
+- An OTP will be sent to reset your password
 
 #### 3. Task Management
-- Click **Add Task** to create a task
-- Double-click a task to **Edit**
+- Click on the last row and fill in **Obligatory fields** to add a task.
+- click on a field of a task to **Edit**
 - Use **checkbox** or button to mark a task as **Completed**
-- Click **Delete** to remove a task
+- Click **Delete** to remove a task given it's task_id
 
 #### 4. Filtering Tasks
 Use the built-in filters or search bar to find tasks by:
