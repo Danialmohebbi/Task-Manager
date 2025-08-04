@@ -1,6 +1,11 @@
 # 🎓 Student Task Manager
 
 A Windows Forms (WinForms) application built with C# for students to manage any tasks. Includes authentication, task filtering, PostgreSQL integration via AWS, and email-based password recovery.
+---
+# Tables Of Contents
+- [Features](#features)
+- [User Documentation](#user-documentation)
+- [Developer Documentation](#developer-documentation)
 
 ---
 
