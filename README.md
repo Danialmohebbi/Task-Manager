@@ -122,8 +122,28 @@ Use the built-in filters or search bar to find tasks by:
 
 ## 👨‍💻 Developer Documentation
 
+### 📁 Project Structure
+
+```text
+Task_Manager/
+┕━ App/
+   ┕━ Extensions/                  # Contains Extensions for IEnumerable<TaskItem> and String
+   ┕━ Interfaces/                  # Defines Interfaces used for services
+   ┕━ Services/                    # Implement Core logic such as login,registeration,adding and editing tasks, etc
+┕━ Data/
+   ┕━ Repositories/                # Contains logic for interacting with the database
+┖─ Config/                         # Contains Configuration Files such as databaseinfo.json and smpt.json
+┕━ Models/                         # Define classes,structs,enum,etc 
+┕━ View/                           # Contains UI components and logic related to it
+┕━ Program.cs                      # App Entry point
+```
+
+---
+
+
 ### Tech Stack
 
+```text
 | Component        | Technology                     |
 |------------------|--------------------------------|
 | Language         | C#                             |
@@ -131,6 +151,7 @@ Use the built-in filters or search bar to find tasks by:
 | Database         | PostgreSQL                     |
 | Hosting          | AWS RDS                        |
 | Email Service    | SMTP                           |
+```
 
 ---
 
@@ -138,7 +159,7 @@ Use the built-in filters or search bar to find tasks by:
 
 #### 👤 Students Table
 
-
+```text
 | Field        | Type         | Description                            |
 |--------------|--------------|----------------------------------------|
 | student_id   | SERIAL       | Primary key                            |
@@ -147,14 +168,15 @@ Use the built-in filters or search bar to find tasks by:
 | email        | VARCHAR(100) | Must be unique and valid format        |
 | username     | VARCHAR(100) | Must be unique                         |
 | password_hash| VARCHAR(255) | Hashed password                        |
+```
 
 ---
 
 #### 📋 Tasks Table
 
-
-| Field         | Type         | Description                                  |
-|---------------|--------------|----------------------------------------------|
+```text
+| Field         | Type          | Description                                  |
+|---------------|---------------|----------------------------------------------|
 | task_id       | SERIAL        | Primary key                                 |
 | student_id    | INT           | Foreign key to `students.student_id`        |
 | title         | VARCHAR(100)  | Task title (required)                       |
@@ -167,6 +189,7 @@ Use the built-in filters or search bar to find tasks by:
 | created_at    | TIMESTAMP     | Auto-generated when created                 |
 | updated_at    | TIMESTAMP     | Auto-updated when edited                    |
 | completed_at  | TIMESTAMP     | Set when task is marked as completed        |
+```
 
 ---
 
